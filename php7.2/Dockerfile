@@ -18,11 +18,11 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     && apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
 		bzip2-dev \
-
 	## 修改时区1
 	   	tzdata \
 	## 修改时区2
-	   	&& cp /usr/share/zoneinfo/Asia/Shanghai /etc/timezone \
+	   	&& cp /usr/share/zoneinfo/${TIME_ZONE}  /etc/localtime \
+	   	&& echo "${TIME_ZONE}" > /etc/timezone \
 
 
 	&& apk add --no-cache \
@@ -72,6 +72,8 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 # 配置composer中国全量镜像
    	&& composer config -g repo.packagist composer https://packagist.phpcomposer.com \
 
+# 删除配置文件 绑定卷方式加载
+    && rm -rf /usr/local/etc \
 
 	## 清理缓存
 	&& rm -rf /tmp/*  ~/.pearrc \
@@ -83,7 +85,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 	## 项目目录文件
 VOLUME /var/www/html
 
-	## 配置文件
+	## 配置文件目录
 VOLUME /usr/local/etc
 
 STOPSIGNAL SIGQUIT
