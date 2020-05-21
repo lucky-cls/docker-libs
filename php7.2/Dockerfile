@@ -65,15 +65,12 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 		intl \
 
 
-# 安装composer
+   # 安装composer
 	&& curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
 	&& php /tmp/composer-setup.php --no-ansi --install-dir=/usr/local/bin --filename=composer --snapshot \
 	&& rm -f /tmp/composer-setup.* \
-# 配置composer中国全量镜像
+   # 配置composer中国全量镜像
    	&& composer config -g repo.packagist composer https://packagist.phpcomposer.com \
-
-# 删除配置文件 绑定卷方式加载
-    && rm -rf /usr/local/etc \
 
 	## 清理缓存
 	&& rm -rf /tmp/*  ~/.pearrc \
@@ -82,14 +79,19 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 
 
-	## 项目目录文件
-VOLUME /var/www/html
+# 项目目录文件
+#VOLUME /var/www/html
+# log 日志
+#VOLUME /var/log
+#配置文件目录
+#VOLUME $PHP_INI_DIR/php.ini
+#VOLUME /usr/local/etc/php-fpm.d
+#STOPSIGNAL SIGQUIT
 
-	## 配置文件目录
-VOLUME /usr/local/etc
+#EXPOSE 9000
+#CMD ["php-fpm"]
 
-STOPSIGNAL SIGQUIT
 
-EXPOSE 9000
 
-CMD ["php-fpm"]
+
+
