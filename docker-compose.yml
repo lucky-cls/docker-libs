@@ -1,0 +1,37 @@
+version: '3.5'
+
+
+
+
+services:
+  luckyphp:
+    container_name: luckyphp
+    image: cailusenlucky/php:7.2-fpm-alpine3.11
+    build: 
+      context: ./php7.2
+      dockerfile: ./Dockerfile
+    ports:
+      - 9001:9000
+    working_dir: /var/www/html
+    volumes:
+      - ./data/php72/php-fpm.d:/usr/local/etc/php-fpm.d
+      - ./data/php72/php.ini:/usr/local/etc/php/php.ini
+      - ./data/php72/log:/var/log
+    networks:
+      - local-network
+
+# volumes:
+#   myphp72:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       device: ./data/php72
+#       o: bind 
+#   tmp:
+
+networks:
+  local-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.21.0/24
