@@ -7,6 +7,10 @@ MAINTAINER cailusenlucky<cailusen.luckey@gmail.com>
 ENV TIME_ZONE Asia/Shanghai
 
 
+## 编译安装phalcon
+ARG PHALCON_VERSION=3.3.2
+ARG PHALCON_EXT_PATH=php7/64bits
+
 # 安装composer并允许root用户运行
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_NO_INTERACTION=1
@@ -40,12 +44,14 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 		redis \
 		imagick \
 		mcrypt \
+		psr \
 
 	&& docker-php-ext-enable \
 		yaf \
 		redis \
 		imagick \
 		mcrypt \
+		psr \
 
 
 	## 安装扩展
@@ -64,6 +70,13 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 		opcache \
 		intl \
 
+	##安装phalcon
+	&& curl -o /tmp/v${PHALCON_VERSION}.tar.gz  -LO https://github.com/phalcon/cphalcon/archive/v${PHALCON_VERSION}.tar.gz  \
+    && tar -xzf /tmp/v${PHALCON_VERSION}.tar.gz -C /tmp \
+    && docker-php-source extract \
+    && mv /tmp/cphalcon-${PHALCON_VERSION}/build/${PHALCON_EXT_PATH}  /usr/src/php/ext/phalcon-${PHALCON_VERSION} \
+    && docker-php-ext-install -j $(getconf _NPROCESSORS_ONLN) phalcon-${PHALCON_VERSION}  \
+    && docker-php-source delete \
 
    # 安装composer
 	&& curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
@@ -76,7 +89,6 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 	&& rm -rf /tmp/*  ~/.pearrc \
 	## 清理安装过的包
 	&& apk del --no-network .build-deps 
-
 
 
 # 项目目录文件
