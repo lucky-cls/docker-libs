@@ -18,7 +18,7 @@ services:
        - ./data/php72/php-fpm.d:/usr/local/etc/php-fpm.d
        - ./data/php72/php.ini:/usr/local/etc/php/php.ini
        - ./data/php72/log:/var/log
-       - ./data/www:/var/www/html
+       - /Users/cailusen/Desktop/flashexpress:/var/www/html
     networks:
        - local-network
 
@@ -29,11 +29,11 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${mysql_root_password}
       MYSQL_USER: ${mysql_user}
-      MYSQL_PASS: ${mysql_pass}
+      MYSQL_PASSWORD: ${mysql_pass}
     ports:
       - 3306:3306
     volumes:
-      - ./data/mysql80/config:/etc/mysql
+      - ./data/mysql80/config/:/etc/mysql/
       - ./data/mysql80/data:/var/lib/mysql
     networks:
       - local-network
