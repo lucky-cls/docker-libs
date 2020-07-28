@@ -45,6 +45,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 		imagick \
 		mcrypt \
 		psr \
+		mongodb \
 
 	&& docker-php-ext-enable \
 		yaf \
@@ -52,6 +53,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 		imagick \
 		mcrypt \
 		psr \
+		mongodb \
 
 
 	## 安装扩展
