@@ -11,8 +11,8 @@ services:
     build: 
       context: ./php7.2
       dockerfile: ./Dockerfile
-    ports:
-       - 9001:9000
+    # ports:
+    #    - 9001:9000
     working_dir: /var/www/html
     volumes:
        - ./data/php72/php-fpm.d:/usr/local/etc/php-fpm.d
@@ -20,23 +20,43 @@ services:
        - ./data/php72/log:/var/log
        - /Users/cailusen/Desktop/flashexpress:/var/www/html
     networks:
-       - local-network
+      local-network:
+        ipv4_address: 192.168.21.2
+    extra_hosts:
+       - backyard.cls.test.com:192.168.21.3
+       - win_hr.cls.test.com:192.168.21.3
 
-  luckymysql:
-    container_name: lucky-mysql
-    image: mysql:8.0.20
+  # luckymysql:
+  #   container_name: lucky-mysql
+  #   image: mysql:8.0.20
+  #   # restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${mysql_root_password}
+  #     MYSQL_USER: ${mysql_user}
+  #     MYSQL_PASSWORD: ${mysql_pass}
+  #   ports:
+  #     - 3306:3306
+  #   volumes:
+  #     - ./data/mysql80/config/:/etc/mysql/
+  #     - ./data/mysql80/data:/var/lib/mysql
+  #   networks:
+  #     - local-network
+
+  luckyopenresty:
+    container_name: lucky-openresty
+    image: openresty/openresty:alpine
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${mysql_root_password}
-      MYSQL_USER: ${mysql_user}
-      MYSQL_PASSWORD: ${mysql_pass}
-    ports:
-      - 3306:3306
+    ports: 
+      - 80:80
     volumes:
-      - ./data/mysql80/config/:/etc/mysql/
-      - ./data/mysql80/data:/var/lib/mysql
+      - ./data/openresty/conf/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ./data/openresty/conf.d:/etc/nginx/conf.d
+      - ./data/openresty/logs:/usr/local/openresty/nginx/logs
+      - /Users/cailusen/Desktop/flashexpress:/var/www/html
     networks:
-      - local-network
+      local-network:
+        ipv4_address: 192.168.21.3
+
   # luckyngin x:
   #   container_name: luckynginx
   #   image: openresty/openresty:1.15.8.3-2-alpine-fat-nosse42
